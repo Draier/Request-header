@@ -1,8 +1,9 @@
 var express = require('express');
 var app = express();
+app.set('trust proxy', true)
 
 app.get('/', (req,res)=>{
-     var ip = req.connection.remoteAddress;
+     var ip = req.headers['x-forwarded-for'];
      var info = {
          'ipaddress': req.ip,
          'language': req.headers["accept-language"].split(',')[0],
@@ -11,4 +12,7 @@ app.get('/', (req,res)=>{
      res.send(info);
  });
 
-app.listen(1337);
+
+const listener = app.listen(process.env.PORT, () => {
+  console.log(`Your app is listening on port ${listener.address().port}`)
+})
